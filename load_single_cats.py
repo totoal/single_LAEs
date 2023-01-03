@@ -10,7 +10,7 @@ def load_s_cats(cat_list=['minijpas', 'jnep']):
                'x_im', 'y_im', 'background', 'threshold', 'flux',
                'flux_relerr', 'mask_flags']
     types_list = ['int', 'int', 'int', 'int', 'float', 'float', 'float',
-                  'float', 'int', 'int', 'float', 'float', 'int']
+                  'float', 'float', 'float', 'float', 'float', 'int']
     types_dict = {}
     for colname, dt in zip(columns, types_list):
         types_dict[colname] = dt
@@ -26,6 +26,10 @@ def load_s_cats(cat_list=['minijpas', 'jnep']):
         cat['flux'] = cat['flux'] * 1e-19
         cat['flux_err'] = cat['flux_relerr'] * cat['flux']
         cat = cat.drop('flux_relerr', axis=1)
+
+        # Drop flagged
+        mflags = (cat['mask_flags'] + cat['flags']) == 0
+        cat = cat[mflags]
 
         merged_cat = pd.concat([merged_cat, cat])
 
