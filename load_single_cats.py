@@ -1,4 +1,5 @@
 import pandas as pd
+import glob
 
 def load_s_cats(cat_list=['minijpas', 'jnep']):
     '''
@@ -35,6 +36,24 @@ def load_s_cats(cat_list=['minijpas', 'jnep']):
 
     return merged_cat
 
+def load_SFG_mock(name):
+    '''
+    Loads the mock catalog of SFG LAEs
+    '''
+    filename = f'/home/alberto/almacen/Source_cats/{name}/'
+    files = glob.glob(filename + 'data*')
+    files.sort()
+    fi = []
 
-if __name__ == '__main__':
-    load_s_cats()
+    for name in files:
+        fi.append(pd.read_csv(name))
+
+    data = pd.concat(fi, axis=0, ignore_index=True)
+    # Drop first useless column
+    data = data.drop(data.columns[0], axis=1)
+
+    return data
+
+# if __name__ == '__main__':
+#     name = 'LAE_12.5deg_z2-4.25_train_jnep_VUDS_deep_0'
+#     load_SFG_mock(name)
